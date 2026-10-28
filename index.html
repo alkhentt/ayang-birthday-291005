@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>untuk manda</title>
+<meta name="theme-color" content="#101522">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#101522;--ivory:#F7F2E9;--rose:#C99A9D;--gold:#D8BE98;--warm:#292830;color-scheme:dark}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent;scrollbar-width:none;-ms-overflow-style:none}
+*::-webkit-scrollbar{display:none;width:0;height:0}
+html,body{height:100%;background:#0a0d16;overflow:hidden}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ivory);display:flex;justify-content:center}
+#app{position:relative;width:100%;max-width:460px;height:100vh;height:100dvh;background:var(--ink);overflow:hidden}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:calc(env(safe-area-inset-top,0px) + 56px) 28px calc(env(safe-area-inset-bottom,0px) + 28px);opacity:0;visibility:hidden;transition:opacity .9s ease,visibility .9s;overflow-y:auto}
+.scene.on{opacity:1;visibility:visible}
+.bg{position:absolute;inset:0;z-index:0;background:radial-gradient(120% 70% at 50% 15%,#2a3350 0%,var(--ink) 65%)}
+.bg video,.bg img{width:100%;height:100%;object-fit:cover}
+.bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(16,21,34,.35),rgba(16,21,34,.82))}
+.fg{position:relative;z-index:1}
+.glow{position:absolute;z-index:0;width:320px;height:320px;border-radius:50%;left:50%;top:18%;transform:translateX(-50%);background:radial-gradient(circle,rgba(216,190,152,.22),transparent 70%);animation:br 6s ease-in-out infinite}
+@keyframes br{50%{opacity:.45;transform:translateX(-50%) scale(1.15)}}
+h1,h2,.serif{font-family:'Cormorant Garamond',Georgia,serif;font-weight:400}
+.ln{font-size:19px;line-height:1.55;margin-bottom:16px;opacity:0;transform:translateY(8px);animation:in 1.3s ease forwards}
+.ln.big{font-family:'Cormorant Garamond',serif;font-size:34px;line-height:1.15;color:var(--ivory)}
+@keyframes in{to{opacity:1;transform:none}}
+.tag{font-size:15px;color:var(--gold);margin-bottom:18px;opacity:.9}
+.btn{display:block;width:100%;min-height:56px;border:1px solid var(--gold);background:rgba(216,190,152,.12);color:var(--ivory);border-radius:16px;font:500 17px 'DM Sans',sans-serif;padding:15px;margin-top:10px;cursor:pointer;transition:background .3s,transform .15s}
+.btn:active{transform:scale(.98);background:rgba(216,190,152,.3)}
+.btn.solid{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.btn:disabled{opacity:.4}
+.back{position:absolute;z-index:3;top:calc(env(safe-area-inset-top,0px) + 12px);left:14px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(16,21,34,.5);color:var(--ivory);font-size:22px;cursor:pointer}
+.field{width:100%;background:rgba(247,242,233,.08);border:1px solid rgba(247,242,233,.25);border-radius:14px;color:var(--ivory);font:500 24px 'DM Sans',sans-serif;letter-spacing:.35em;text-align:center;padding:16px 8px}
+.field:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:2px}
+label{font-size:14px;color:var(--gold);display:block;margin:20px 0 8px}
+.err{color:var(--rose);font-size:15px;min-height:44px;margin-top:10px;line-height:1.4}
+.shake{animation:sh .4s}
+@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.albums{display:grid;gap:12px;margin:6px 0;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:2px 0;align-content:start;-webkit-overflow-scrolling:touch}
+.mu{flex:1;min-height:0;display:flex;flex-direction:column}
+#sc-music{overflow:hidden;justify-content:flex-start}
+.alb{display:flex;gap:14px;align-items:center;text-align:left;width:100%;height:76px;flex:none;gap:12px;padding:8px 10px 8px 8px;border-radius:16px;border:1px solid rgba(247,242,233,.15);background:var(--warm);color:var(--ivory);font-family:inherit;cursor:pointer;transition:border .3s}
+.alb.sel{border-color:var(--gold);background:#33313b}
+.cover{flex:none;width:60px;height:60px;border-radius:10px;background:linear-gradient(135deg,var(--rose),var(--gold));display:grid;place-items:center;overflow:hidden;color:var(--ink);font-size:20px}
+.nowp{flex:none;width:28px;text-align:center;font-style:normal;color:var(--gold);font-size:20px}
+.cover img{width:100%;height:100%;object-fit:cover}
+.alb b{flex:1;min-width:0;font:600 20px/1.2 'Cormorant Garamond',serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+.date{font:italic 400 52px/1 'Cormorant Garamond',serif;color:var(--gold);margin-bottom:22px;animation:in 1.6s ease both}
+.mem{position:relative;z-index:1;flex:1;display:grid;place-items:center;min-height:0;margin-bottom:14px}
+.mem .frame{width:min(100%,52dvh);aspect-ratio:1/1;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#2a3350,var(--warm));display:grid;place-items:center;text-align:center;color:#b9b4ab;font-size:14px;padding:20px}
+.frame img,.frame video{width:100%;height:100%;object-fit:cover}
+.paper{background:var(--ivory);color:#3a3636}
+.paper .bg{background:radial-gradient(120% 80% at 50% 0,#fffaf0,var(--ivory));}
+.paper .bg::after{display:none}
+.paper .btn{color:#3a3636;border-color:#a98f68;background:rgba(169,143,104,.12)}
+.paper .btn.solid{background:#3a3636;color:var(--ivory);border-color:#3a3636}
+.letter{font-family:'Cormorant Garamond',serif;font-size:19.5px;line-height:1.6;color:#3a3636;padding-top:8px}
+.letter p{margin-bottom:14px;opacity:0;animation:in 1.2s ease forwards}
+.env{width:210px;height:140px;margin:0 auto 26px;position:relative;cursor:pointer;background:#e9dfcd;border-radius:6px;box-shadow:0 14px 34px rgba(0,0,0,.18);border:0;display:block}
+.env::before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom right,transparent 49.5%,#d8c9ae 50%) 0 0/50% 100% no-repeat,linear-gradient(to bottom left,transparent 49.5%,#d8c9ae 50%) 100% 0/50% 100% no-repeat;opacity:.55}
+.flap{position:absolute;left:0;top:0;width:100%;height:70px;background:#d8c9ae;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .9s ease}
+.env.open .flap{transform:rotateX(180deg)}
+.seal{position:absolute;left:50%;top:50px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:var(--rose);z-index:2;transition:opacity .4s}
+.env.open .seal{opacity:0}
+.gift{width:130px;height:130px;margin:0 auto 26px;display:block;border:0;background:none;cursor:pointer;position:relative;animation:br 4s infinite}
+.gift i{position:absolute;left:0;right:0;bottom:0;height:80px;background:var(--rose);border-radius:8px}
+.gift u{position:absolute;left:-6px;right:-6px;top:18px;height:34px;background:var(--gold);border-radius:8px;transition:transform .9s ease,opacity .9s;transform-origin:left bottom}
+.gift.open u{transform:translateY(-34px) rotate(-14deg);opacity:.0}
+.gift::after{content:"";position:absolute;left:50%;bottom:0;width:14px;height:80px;margin-left:-7px;background:var(--gold)}
+textarea{width:100%;min-height:150px;resize:none;background:rgba(247,242,233,.08);border:1px solid rgba(247,242,233,.25);border-radius:14px;color:var(--ivory);font:400 18px/1.5 'DM Sans',sans-serif;padding:14px}
+textarea::placeholder{color:#a9a49b}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{min-height:44px;padding:8px 14px;border-radius:22px;border:1px solid rgba(216,190,152,.5);background:none;color:var(--ivory);font:400 14.5px 'DM Sans',sans-serif;cursor:pointer}
+.small{font-size:14px;color:#cfc9bf;line-height:1.5;margin-top:10px}
+.sign{font:italic 24px 'Cormorant Garamond',serif;color:var(--gold);margin:6px 0 20px}
+#mus{position:absolute;z-index:5;top:calc(env(safe-area-inset-top,0px) + 12px);right:14px;width:44px;height:44px;border-radius:50%;border:1px solid var(--gold);background:rgba(16,21,34,.55);color:var(--gold);font-size:16px;display:none;cursor:pointer}
+#toast{position:absolute;z-index:6;left:20px;right:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);display:none}
+#sc-read{overflow:hidden;justify-content:flex-start}
+.rd{flex:1;min-height:0;display:flex;flex-direction:column}
+.rd .letter{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:8px 6px 16px 0;margin-bottom:6px}
+.gift{animation:gp 3.6s ease-in-out infinite}
+@keyframes gp{50%{transform:scale(1.06)}}
+.gs{font-size:17px;color:var(--gold);text-align:center;margin-bottom:6px;animation:in 1s ease .5s both}
+.gt{font:400 40px/1.15 'Cormorant Garamond',Georgia,serif;text-align:center;color:var(--ivory);text-shadow:0 0 26px rgba(216,190,152,.4);margin-bottom:8px}
+.wd{display:inline-block;white-space:nowrap}
+.lt{display:inline-block;animation:pop .7s cubic-bezier(.3,1.7,.5,1) both}
+@keyframes pop{0%{opacity:0;transform:translateY(28px) scale(.3)}100%{opacity:1;transform:none}}
+.gtitle{font-size:30px;margin-bottom:26px;max-height:90px;overflow:hidden;transition:opacity .5s,max-height .8s ease .1s,margin .8s ease .1s}
+.gtitle.gone{opacity:0;max-height:0;margin-bottom:0}
+#sc-gift{justify-content:flex-start}
+.gift.open{animation:gbig 1.1s cubic-bezier(.3,1.4,.5,1) forwards;margin-bottom:80px}
+@keyframes gbig{0%{transform:scale(1)}30%{transform:scale(.8)}100%{transform:scale(1.6)}}
+.fx{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:3}
+.bh{position:absolute;left:var(--px);top:var(--py);color:var(--rose);font-size:var(--s,18px);line-height:1;opacity:0;animation:bst var(--d,2.4s) cubic-bezier(.1,.7,.3,1) var(--w,0s) forwards}
+.bh.g{color:var(--gold)}
+@keyframes bst{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}12%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.2)}}
+.ring{position:absolute;left:var(--px);top:var(--py);width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;box-shadow:0 0 0 0 rgba(216,190,152,.5);animation:rg 1.8s ease-out var(--w,0s) forwards}
+@keyframes rg{to{box-shadow:0 0 0 170px rgba(216,190,152,0)}}
+.cf{position:absolute;left:var(--px);top:var(--py);width:var(--cw);height:var(--ch);background:var(--c);border-radius:2px;opacity:0;animation:cfl var(--d) linear var(--w) forwards}
+@keyframes cfl{0%{opacity:1;transform:translate(0,0) rotate(0);animation-timing-function:cubic-bezier(.2,.8,.4,1)}40%{opacity:1;transform:translate(calc(var(--dx)*.6),var(--up)) rotate(calc(var(--r)*.4));animation-timing-function:ease-in}100%{opacity:1;transform:translate(var(--dx),var(--dn)) rotate(var(--r))}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<div id="app"><button id="mus" aria-label="putar atau jeda musik">❚❚</button><div id="toast"></div></div>
+<script>
+/* ===== KONFIGURASI — ganti di sini saja ===== */
+const CONFIG={
+  CODE:"29102005",                // tanggal lahir DDMMYYYY
+  WA_NUMBER:"6282271450725",                   // nomor Zain, format internasional tanpa +/spasi, mis. 62812xxxxxxx
+    SENDER:"perempuan cantik yang sedang berulang tahun hari ini", // nama pengirim di WhatsApp
+  MEDIA:{                         // isi path/URL; kosong = placeholder
+    gate:{type:"video",src:"media/video/gate.mp4"}, open:{type:"video",src:"media/video/open.mp4"},
+    s1:{src:"media/foto/s1.jpeg"},s2:{src:"media/foto/s2.jpeg"},s5:{src:"media/foto/s5.jpeg"},s6:{src:"media/foto/s6.jpeg"},
+    reply:{src:"media/foto/reply.jpeg"}, end:{src:"media/foto/end.jpeg"}
+  },
+  MUSIC:[
+    {title:"Happy Birthday, My Love",cover:"",src:"media/musik/lagu1.mp3"},
+    {title:"Happy Birthday (instrumental)",cover:"",src:"media/musik/lagu2.mp3"},
+    {title:"1000x",cover:"",src:"media/musik/lagu3.mp3"},
+    {title:"Ceritaku Ceritamu",cover:"",src:"media/musik/lagu4.mp3"},
+    {title:"Shudden Shower",cover:"",src:"media/musik/lagu5.mp3"},
+    {title:"Love You With All My Heart",cover:"",src:"media/musik/lagu6.mp3"}
+  ],
+  MEMORIES:[
+    {type:"video",src:"media/video/kenangan1.mp4",date:"",cap:"sesimpel seeing you on my screen aja, sometimes udah cukup buat bikin my day so much better."}
+  ]
+};
+const LETTER = [
+  "happy birthday, sayangkuu ❤️",
+  "akhirnya ayang nambah umur lagi nihh, hihihih. semoga ayang selalu sehat, bahagia, dan semua yang ayang usahain bisa tercapai satu-satu yaa.",
+  "zen masih suka mikir, lucu yaa perjalanan nya kita. dulu pernah sama-sama, break up dan asing, eh sekarang malah bisa sama-sama lagi. and honestly, zen seneng sekali kita bisa sampai di titik ini.",
+  "walaupun sekarang kita masih LDR dan belum bisa ketemu sesuka hati, zen tetap senang bisa jadi bagian dari hari-hari nya ayang. sesimpel ngobrol sama ayang saja sudah bikin hari nya zen lebih baik.",
+  "zen tau ayang punya banyak hal yang harus diurus, apalagi soal kuliah. jadi jangan lupa istirahat yaa sayang. ndak harus selalu kuat, kalau capek cerita ke zen.",
+  "zen juga berharap kita bisa terus belajar sama-sama. kalau ada yang salah, kita omongin baik-baik yaa. kita ndak harus sempurna, yang penting sama-sama mau ngerti dan memperbaiki diri.",
+  "makasih yaa, sayang, sudah hadir lagi di hidup nya zen. makasih sudah mau jalan bareng zen sampai sekarang. having you in my life means a lot to me, sayangg.",
+  "semoga di umur yang baru ini, ayang makin bahagia, makin dekat sama impian nya ayang, dan selalu punya alasan buat senyum dan bahagia. zen bakal ikut senang lihat ayang tumbuh jadi versi diri nya ayang yang lebih baik.",
+  "semoga masih banyak cerita, ketawa, dan kenangan yang bisa kita bikin sama-sama. pelan-pelan aja yaa sayang. one step at a time, as long as it's with you. ❤️",
+  "happy birthday sekali lagi, cantikkuu. semoga hari ini penuh hal baik buat ayang, walaupun zen belum bisa ada di samping ayang secara langsung sekarang.",
+  "with love,",
+  "zen ♡"
+];
+
+const CINE=[
+ {id:"hb",bg:"open",lines:["happy birthday, sayanggg ❤️","hari ini ada satu orang yang pantes banget buat dirayain.","dan orang itu... kamu❤️","makasih yaa sudah hadir kembali di hidup aku."],btn:"lanjut, sayang",big:0},
+ {id:"s1",bg:"s1",tag:"kita pernah punya cerita",lines:["waktu itu kita masih kelas 10.","masih sama-sama belajar soal hubungan, dengan cara kita sendiri.","masih bochil, masih banyak belajar, dan waktu itu kita belum tau kalau suatu hari nanti bakal punya kesempatan buat mulai lagi."]},
+ {id:"s2",bg:"s2",tag:"maybe it was just a pause",lines:["kita sempat jauh, bahkan sampai kayak dua orang yang tidak pernah punya cerita sebelumnya.","tapi ternyata, setelah sekian lama, kita masih punya kesempatan buat saling kenal lagi.","and this time, we got to start over."]},
+ {id:"s5",bg:"s5",date:"24 april 2026",lines:["plot twist: it's us again","ternyata, setelah semua yang pernah kita lewati, kita bisa sedekat ini lagi.","this time, we get to try again, together. ♡"]},
+ {id:"s6",bg:"s6",tag:"until the distance feels smaller",lines:["untuk sekarang, kita masih harus sabar sama jarak dan waktu.","ada mimpi yang harus kita kejar, ada tanggung jawab yang perlu kita selesaikan, dan ada banyak hal yang masih harus kita pelajari sama-sama.","someday, I hope all these little efforts will bring us closer to the life we've been dreaming of."]}
+];
+const CHIPS=["makasih yaa, sayangg ❤️","aku sayang kamu.","isi pesan sendiri."];
+
+/* ===== inti ===== */
+const $=(s,r=document)=>r.querySelector(s),app=$("#app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const stack=[];let cur=null,audio=null,pick=-1,memI=0;
+function media(m,fallbackType){
+  if(!m||!m.src)return"";
+  const t=m.type||fallbackType||"image";
+  return t==="video"?`<video src="${esc(m.src)}" autoplay muted loop playsinline preload="metadata" onerror="this.remove()"></video>`:`<img src="${esc(m.src)}" alt="" onerror="this.remove()">`;
+}
+function bg(key,paper){return paper?`<div class="bg"></div>`:`<div class="bg">${media(CONFIG.MEDIA[key],"image")}</div><div class="glow"></div>`}
+function stagger(){document.querySelectorAll(".scene.on .ln").forEach((e,i)=>e.style.animationDelay=(.5+i*1.2)+"s")}
+function add(id,cls,html,backable=true){
+  const d=document.createElement("section");d.className="scene "+(cls||"");d.id="sc-"+id;
+  d.innerHTML=html+(backable?`<button class="back" aria-label="kembali" data-back>‹</button>`:"");
+  app.appendChild(d);return d;
+}
+function go(id,push=true){
+  const n=$("#sc-"+id);if(!n)return;
+  if(cur&&push)stack.push(cur);
+  document.querySelectorAll(".scene").forEach(s=>{s.classList.remove("on");s.querySelectorAll("video").forEach(v=>v.pause())});
+  n.classList.add("on");n.scrollTop=0;n.querySelectorAll("video").forEach(v=>v.play().catch(()=>{}));
+  n.querySelectorAll(".ln,.letter p,.date").forEach(e=>{e.style.animation="none";e.offsetHeight;e.style.animation=""});
+  cur=id;stagger();if(id==="read")n.querySelectorAll(".letter p").forEach((p,i)=>p.style.animationDelay=(i*.6)+"s");const lt=$("#ltr");if(lt)lt.scrollTop=0;
+}
+function back(){const p=stack.pop();if(p)go(p,false)}
+function toast(h){const t=$("#toast");t.innerHTML=h;t.style.display="block"}
+
+/* build scenes */
+add("gate","",`${bg("gate")}<div class="fg">
+ <p class="ln serif big">hello sayanggg...</p><p class="ln">ada sesuatu buat kamu nih.</p><p class="ln">tapi sebelum lanjut, pin nya sesuai tanggal lahir kamu yahh.</p>
+ <label for="code">tanggal lahir kamu</label>
+ <input id="code" class="field" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="DDMMYYYY" autocomplete="off">
+ <p class="err" id="gerr" role="alert"></p>
+ </div>`,false);
+
+add("music","",`${bg("")}<div class="fg mu"><p class="ln" style="margin-bottom:6px">sebelum lanjut, putar dulu yukk musik nyaa..</p><p class="ln" style="font-size:16px;margin-bottom:8px">pilih yang ayang suka yaa. tinggal klik lagunya, boleh ganti-ganti dulu kok. kalau udah cocok, gasken lanjut.</p>
+ <div class="albums" id="albums"></div><p class="small" id="mnote"></p>
+ <button class="btn solid" id="mgo" disabled>ayo, kita mulai ♡</button></div>`,false);
+
+CINE.forEach((c,i)=>{
+  const nx=i<CINE.length-1?CINE[i+1].id:"mem";
+  add(c.id,"",`${bg(c.bg)}<div class="fg">${c.tag?`<p class="tag">${c.tag}</p>`:""}${c.date?`<p class="date">${c.date}</p>`:""}
+  ${c.lines.map((l,j)=>`<p class="ln${c.id==="hb"&&j==0?" big":""}">${l}</p>`).join("")}
+  <button class="btn ${c.id==="hb"?"solid":""}" data-go="${nx}">${c.btn||"lanjut"}</button></div>`,c.id!=="hb");
+});
+
+add("mem","",`${bg("")}<div class="fg" style="display:flex;flex-direction:column;height:100%"><p class="serif" style="font-size:30px;margin-bottom:14px;line-height:1.15;text-align:center;width:100%">hari-hari kita di tengah jarak</p>
+ <div class="mem"><div class="frame" id="mframe"></div></div><p class="ln" id="mcap" style="font-size:17px;margin-bottom:6px;text-align:center;width:100%"></p><p class="small" id="mdate" style="margin:0 0 6px"></p>
+ <button class="btn" id="mnext">lanjut</button></div>`);
+
+add("letter","paper",`${bg("",1)}<div class="fg" style="margin:auto 0">
+ <p class="serif" style="font-size:26px;text-align:center;margin-bottom:26px;color:#3a3636">ada sedikit yang pengen zen bilang nihh...</p>
+ <button class="env" id="env" aria-label="buka amplop"><span class="flap"></span><span class="seal"></span></button>
+ <p class="small" id="ehint" style="text-align:center;color:#6b6460">pencet amplopnya yakk</p></div>`);
+
+add("read","paper",`${bg("",1)}<div class="fg rd"><div class="letter" id="ltr">${LETTER.map(p=>`<p>${p}</p>`).join("")}</div><button class="btn solid" data-go="gift">lanjut</button></div>`);
+
+add("gift","",`${bg("")}<div class="fg" style="margin:auto 0;text-align:center">
+ <p class="serif gtitle" id="gtitle">ehh, masih ada satu lagi nihh</p>
+ <button class="gift" id="gbox" aria-label="buka hadiah"><i></i><u></u></button>
+ <div id="gmsg" style="text-align:left"></div>
+ <button class="btn solid" data-go="reply" id="gnext" style="display:none">lanjut</button></div>`);
+
+add("reply","",`${bg("reply")}<div class="fg"><p class="ln" style="margin-bottom:6px">itu diaa semua dari zen...</p><p class="ln" style="margin-bottom:6px">sekarang zen mau denger tanggapan dari ayang.</p>
+ <textarea id="msg" maxlength="500" placeholder="tulis aja semua di sini, nanti pas klik kirim langsung menuju WA kok" aria-label="pesan untuk zen"></textarea>
+ <div class="chips" id="chips"></div><p class="err" id="rerr" role="alert" style="min-height:0"></p>
+ <button class="btn solid" id="send">kirim pesan ke WhatsApp ♡</button>
+ </div>`);
+
+add("end","",`${bg("end")}<div class="fg"><p class="ln">segitu dulu hadiah kecil dari zen, sayang.</p><p class="ln">semoga hari ini bikin kamu senyum lebih banyak yaa.</p><p class="ln">makasih udah mau luangin waktu buat lihat semua ini.</p>
+ <p class="ln big">happy birthday, cantikk.</p><p class="ln">love you, always. ❤️</p><p class="sign">— zen</p>
+ <button class="btn" id="again" style="min-height:48px;font-size:15px">lihat lagi dari awal</button></div>`,false);
+
+/* gate */
+function tryCode(){
+  const v=$("#code").value.trim(),e=$("#gerr");
+  if(v===CONFIG.CODE){e.textContent="";go("music");$("#code").blur()}
+  else{e.textContent="ihh, masa tanggal lahir sendiri lupa sihh? coba lagii sayang.";const c=$("#code");c.classList.remove("shake");c.offsetHeight;c.classList.add("shake");setTimeout(()=>{c.value=""},700)}
+}
+$("#code").maxLength=CONFIG.CODE.length;$("#code").addEventListener("keydown",e=>{if(e.key==="Enter")tryCode()});
+$("#code").addEventListener("input",e=>{e.target.value=e.target.value.replace(/\D/g,"");$("#gerr").textContent="";if(e.target.value.length>=CONFIG.CODE.length)tryCode()});
+
+/* music */
+const al=$("#albums"),musBtn=$("#mus");
+audio=new Audio();audio.loop=true;audio.volume=.7;audio.preload="none";
+function setBtn(){musBtn.textContent=audio.paused?"▶":"❚❚"}
+audio.addEventListener("play",setBtn);audio.addEventListener("pause",setBtn);
+function paintSel(){[...al.children].forEach((c,j)=>{c.classList.toggle("sel",j===pick);c.querySelector(".nowp").textContent=j===pick&&CONFIG.MUSIC[j].src?"♪":""})}
+function playTrack(i){
+  const m=CONFIG.MUSIC[i];
+  if(i===pick&&!audio.paused)return;
+  pick=i;paintSel();$("#mgo").disabled=false;
+  $("#mnote").textContent=m.src?"":"file lagunya belum ditambahin, jadi masih tanpa suara.";
+  if(!m.src){audio.pause();return}
+  audio.src=m.src;audio.currentTime=0;
+  audio.play().catch(()=>{$("#mnote").textContent="lagunya belum bisa diputar. cek file "+m.src+" yaa, atau tap lagunya lagi."});
+}
+CONFIG.MUSIC.forEach((m,i)=>{
+  const d=document.createElement("div");d.className="alb";d.tabIndex=0;d.setAttribute("role","button");
+  d.innerHTML=`<div class="cover">${m.cover?`<img src="${esc(m.cover)}" alt="" onerror="this.remove()">`:"♪"}</div><b>${esc(m.title)}</b><em class="nowp" aria-label="sedang diputar"></em>`;
+  d.onclick=()=>playTrack(i);
+  d.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();playTrack(i)}};
+  al.appendChild(d);
+});
+musBtn.onclick=()=>{if(!audio.src)return;audio.paused?audio.play().catch(()=>{}):audio.pause()};
+$("#mgo").onclick=()=>{
+  if(audio.src){musBtn.style.display="block";setBtn();
+    if(audio.paused)audio.play().catch(()=>{toast(`<button class="btn solid" id="mstart">yahh musiknya belum jalan, pencet ini dulu yukk</button>`);$("#mstart").onclick=()=>{audio.play();$("#toast").style.display="none"}})}
+  go("hb");
+};
+
+/* navigation */
+app.addEventListener("click",e=>{
+  const g=e.target.closest("[data-go]");if(g){go(g.dataset.go);return}
+  if(e.target.closest("[data-back]"))back();
+});
+$("#again").onclick=()=>{stack.length=0;cur=null;go("hb",false)};
+
+/* memories */
+function showMem(){
+  const m=CONFIG.MEMORIES[memI],f=$("#mframe");
+  const html=m.src?(m.type==="video"?`<video src="${esc(m.src)}" autoplay muted loop playsinline disablepictureinpicture preload="auto" style="pointer-events:none" onerror="this.remove()"></video>`:`<img src="${esc(m.src)}" alt="">`):`<span>foto atau video kenangan kita belum ditambahin di sini</span>`;
+  f.innerHTML=html;
+  const v=f.querySelector("video");if(v){v.muted=true;v.play().catch(()=>{})}
+  $("#mcap").textContent=m.cap;$("#mdate").textContent=m.date||"";
+  const last=memI===CONFIG.MEMORIES.length-1;$("#mnext").textContent=last?"lanjut":"kenangan berikutnya";
+}
+$("#mnext").onclick=()=>{if(memI<CONFIG.MEMORIES.length-1){memI++;showMem()}else go("letter")};
+const memScene=$("#sc-mem");new MutationObserver(()=>{if(memScene.classList.contains("on")&&cur==="mem"){memI=0;showMem()}}).observe(memScene,{attributes:true,attributeFilter:["class"]});
+
+/* letter & gift */
+$("#env").onclick=function(){this.classList.add("open");$("#ehint").style.display="none";setTimeout(()=>go("read"),1100)};
+$("#gbox").onclick=function(){
+  if(this.classList.contains("open"))return;
+  const sc=$("#sc-gift"),calm=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  this.classList.add("open");$("#gtitle").classList.add("gone");
+  let n=0;
+  const words=t=>t.split(" ").map(w=>`<span class="wd">${[...w].map(ch=>`<span class="lt" style="animation-delay:${(1.2+(n++)*.05).toFixed(2)}s">${ch}</span>`).join("")}</span>`).join(" ");
+  $("#gmsg").innerHTML=`<p class="gs" style="animation-delay:1s">sekali lagii...</p><p class="gt">${words("happy birthday,")} ${words("cantikkkk")} <span class="lt" style="animation-delay:${(1.2+n*.05).toFixed(2)}s">❤️</span></p>`;
+  if(!calm)setTimeout(()=>{
+    const rb=this.getBoundingClientRect(),rs=sc.getBoundingClientRect(),W=rs.width,H=rs.height;
+    const cx=rb.left-rs.left+rb.width/2,cy=rb.top-rs.top+rb.height/2;
+    const fx=document.createElement("div");fx.className="fx";
+    const R=(a,b)=>a+Math.random()*(b-a),cols=["#C99A9D","#D8BE98","#F7F2E9","#e8c4c6","#f0dfc0"],sym=["♥","♥","♥","✦","♥","✧"];
+    const put=(tag,cls,st,txt)=>{const e=document.createElement(tag);e.className=cls;e.style.cssText=st;if(txt)e.textContent=txt;fx.appendChild(e)};
+    for(let i=0;i<2;i++)put("span","ring",`--px:${cx}px;--py:${cy}px;--w:${i*.4}s`);
+    for(let i=0;i<40;i++){const a=R(0,6.283),d=R(110,340);
+      put("span","bh"+(i%3?"":" g"),`--px:${cx}px;--py:${cy}px;--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d}px;--s:${R(14,32)}px;--d:${R(1.8,3)}s;--w:${i*.03}s`,sym[i%6]);}
+    for(let k=0;k<4;k++){const sx=R(.15,.85)*W,sy=R(.1,.45)*H,w=.5+k*.7;
+      for(let j=0;j<12;j++){const a=j/12*6.283,d=R(50,90);put("span","bh g",`--px:${sx}px;--py:${sy}px;--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d}px;--s:14px;--d:1.2s;--w:${w}s`,"✦");}}
+    for(let i=0;i<80;i++){
+      const cannon=i<40,side=i%2,common=`--cw:${R(6,11)}px;--ch:${R(10,18)}px;--c:${cols[i%5]};--r:${R(300,900)}deg;`;
+      put("i","cf",common+(cannon?`--px:${side?W:0}px;--py:${H}px;--dx:${(side?-1:1)*R(40,170)}px;--up:${-R(.45,.8)*H}px;--dn:${R(.05,.2)*H}px;--d:${R(2.2,3.4)}s;--w:${R(0,.5)}s`:`--px:${R(0,W)}px;--py:-24px;--dx:${R(-60,60)}px;--up:${H*.35}px;--dn:${H+40}px;--d:${R(2.8,4.6)}s;--w:${R(.2,2.4)}s`));
+    }
+    sc.appendChild(fx);setTimeout(()=>fx.remove(),8000);
+  },900);
+  setTimeout(()=>{$("#gnext").style.display="block"},4500);
+};
+
+/* reply + WhatsApp */
+const ch=$("#chips"),ta=$("#msg");
+CHIPS.forEach((t,i)=>{const b=document.createElement("button");b.className="chip";b.textContent=t;
+  b.onclick=()=>{if(i===CHIPS.length-1){ta.value="";ta.focus()}else{ta.value=t}};ch.appendChild(b)});
+ta.addEventListener("focus",()=>setTimeout(()=>ta.scrollIntoView({block:"center",behavior:"smooth"}),300));
+if(window.visualViewport)visualViewport.addEventListener("resize",()=>{app.style.height=visualViewport.height+"px"});
+$("#send").onclick=()=>{
+  const t=ta.value.trim(),e=$("#rerr");
+  if(!t){e.style.minHeight="24px";e.textContent="tulis dulu dong pesannya sayang.";ta.focus();return}
+  e.textContent="";
+  const text=`Dari ${CONFIG.SENDER}:\n${t.slice(0,500)}`;
+  const num=String(CONFIG.WA_NUMBER).replace(/\D/g,"");
+  const url=`https://wa.me/${num}?text=${encodeURIComponent(text)}`;
+  const w=window.open(url,"_blank");
+  const box=$("#rerr");box.style.minHeight="0";
+  box.innerHTML=`<span class="small">WhatsApp kebuka? tinggal pencet kirim di sana yaa. kalau nggak kebuka:</span><button class="btn" id="cp" style="min-height:48px;font-size:15px">salin pesan</button><button class="btn solid" id="done" style="min-height:48px;font-size:15px">udah, lanjut</button>${num?"":`<span class="small">catatan: nomor Zain belum diisi di konfigurasi, jadi pilih kontaknya sendiri di WhatsApp.</span>`}`;
+  $("#cp").onclick=async()=>{try{await navigator.clipboard.writeText(text);$("#cp").textContent="tersalin ✓"}catch(_){ta.select();$("#cp").textContent="tahan dan salin dari kolom"}};
+  $("#done").onclick=()=>go("end");
+};
+
+go("gate",false);
+</script>
+</body>
+</html>
